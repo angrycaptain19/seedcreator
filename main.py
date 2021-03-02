@@ -192,10 +192,8 @@ class TMainWindow(QMainWindow):
         endbin = binhash[:8]
 
         lastNumber = bit24 + endbin
-        lastIndex = int(lastNumber,2)
-
         #print ("Index", lastIndex)
-        return lastIndex
+        return int(lastNumber,2)
 
 
     # check additional word for seed
@@ -211,7 +209,7 @@ class TMainWindow(QMainWindow):
 
     def __find_word24_all(self):
         l = []
-        for i in range (0, len(self.wortliste)):
+        for i in range(len(self.wortliste)):
             if self.__check_seed(i):
                 word = self.wortliste[i]
                 print ('Gefunden 2', i, word)
@@ -220,7 +218,7 @@ class TMainWindow(QMainWindow):
         return l
 
     def __find_word24(self):
-        for i in range (0, len(self.wortliste)):
+        for i in range(len(self.wortliste)):
             if self.__check_seed(i):
                 word = self.wortliste[i]
                 print ('Gefunden 2', i, word)
@@ -498,8 +496,7 @@ class TMainWindow(QMainWindow):
     def getIndex(self, zahl1, zahl2, zahl3):
         if (zahl1 < 1 or zahl1 > 16 or zahl2 < 1 or zahl2 > 16 or zahl3 < 1 or zahl3 > 16 ):
             raise TRangeError("Eingaben nicht im richtigen Bereich (1-16)")
-        val = ((zahl1 - 1)*256 + (zahl2 - 1) * 16 + zahl3 - 1) // 2
-        return val
+        return ((zahl1 - 1)*256 + (zahl2 - 1) * 16 + zahl3 - 1) // 2
 
     def __calulate(self, le1, le2, le3, labelIndex, labelWort):
         t1 = le1.text()
@@ -632,29 +629,6 @@ class TMainWindow(QMainWindow):
             self.ui.labelWort24Index.setText('')
         return
 
-        self.w24Liste = self.__find_word24_all()
-        l = len(self.b)
-        b2 = self.b
-
-        print ("Laenge", l,b2)
-
-        if len(self.w24Liste) == 8:
-            try:
-                wuerfel24 = int(self.ui.lew24w1.text())
-                index = self.w24Liste[(wuerfel24-1) // 2]
-                word = self.wortliste[index]
-                self.ui.labelWort24.setText(word)
-                self.ui.labelWort24Index.setText(str(index))
-                self.seed += word
-            except:
-                self.seed = ''
-                self.ui.labelWort24.setText('')
-
-        else:
-            self.seed = ''
-
-        self.ui.textEditSeed.setText(self.seed)
-
 
     def buttonCalculate2(self):
         z1 = int(self.ui.lew1w1.text())
@@ -665,12 +639,10 @@ class TMainWindow(QMainWindow):
         self.ui.labelWort1.setText(self.wortliste[index])
 
     def readWortList(self):
-        f = open('data/english.txt')
+        with open('data/english.txt') as f:
+            # list = f.readlines()
+            self.wortliste = f.read().splitlines()
 
-        # list = f.readlines()
-        self.wortliste = f.read().splitlines()
-
-        f.close()
         print (self.wortliste)
 
 if __name__ == "__main__":
